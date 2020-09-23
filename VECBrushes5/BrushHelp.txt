@@ -1,0 +1,222 @@
+10
+#1   Basic
+#2   Vectors
+#3   Color
+#4   Transparency
+#5   Scratch frame
+#6   File operations
+#7   Cross hairs & Magnifier
+#8   Resizing canvas
+#9   Vector format
+#10  Parked colors' format
+
+                   Brush Vectors
+
+                 by  Robert Rayment
+
+                     Sep 2003
+#1   Basic
+ 
+    Select brush size, brush angle, transparency & color
+    then start drawing with a left-click, move mouse and
+    end stroke with a second left-click.  A red dot at
+    top left turns green when a stroke has started and red
+    when it is finished.  Holding the Shift key down fixes
+    the X coord only allowing Y to change and vice-versa
+    for the Ctrl key.
+    NB instead of left-click the space bar can be used to
+    start and end a stroke.
+    NB the Fill tool doesn't use the transparency.
+    NB The system should be set to True Color (24/32
+    bit color) for transparency to work properly.
+    
+#2   Vectors
+
+    All brush strokes (& Fill) are saved in an integer
+    array VEC(0 to NumVectors).
+
+    ----------------------------------------------------
+    Undo:  redraws the picture ignoring the last vector
+    drawn.  So repeated Undos will eventually ignore all
+    the stored vectors.  The stored vectors are not 
+    deleted.
+
+    ----------------------------------------------------
+    Redo:  redraws, bringing the ignored vectors back,
+    one at a time, until they are all drawn again.
+ 
+    ----------------------------------------------------
+    Clear picture:  clears the canvas to the backcolor
+    without affecting the stored vectors.
+
+    ----------------------------------------------------
+    Redraw picture:  redraws all the vectors clearing any
+    Undos
+
+    ----------------------------------------------------
+    Del last vector:  permanently deletes the last vector
+    drawn and redraws the picture
+
+    ----------------------------------------------------
+    Del all vectors:  permanently deletes all vectors ie
+    a restart.  Same as New on the File menu.
+
+    ----------------------------------------------------
+    Clip vectors:  permanently deletes all the vectors
+    down to the last Undo.
+
+    ----------------------------------------------------
+    Fix new canvas size:  if there are visible strokes 
+    then the picture must be cleared first before using
+    the resize button at the bottom right of the canvas,
+    then pressing the Fix button will redraw on the new
+    canvas.
+    NB a Fill operation will extend into the new size if
+    there is no boundary vector, alternatively if the
+    fill point lies outside the picture rectangle it will
+    not act.
+
+    ----------------------------------------------------
+    Stretch vectors:  the picture needs to be cleared 
+    first, then resize the canvas with the resize button
+    at the bottom right of the canvas, then pressing
+    the Stretch button will stretch or shrink the
+    strokes onto the new canvas.
+    NB. Fill points can also be a problem as in the
+    previous item.  Though stroke sizes are changed,
+    vectors that were just touching can open up a gap
+    letting a Fill leak out.
+
+    ----------------------------------------------------
+    Fast redraw:  It can be checked or unchecked.  When 
+    unchecked each vector can be seen as it is drawn but
+    when checked the picture only shows after all drawing
+    is done.  Fills however, will flash the picture on 
+    at that point and carry on.
+    NB. Very much faster when compiled.
+
+    ----------------------------------------------------
+    All the above actions are also shown on the Edit menu.
+
+    The number of vectors drawn and those visible (from
+    Undo/Redo) are shown in the Info frame.
+
+#3   Color
+
+    The paint color can be set by left-clicking on the
+    main color box, the color strips or right-clicking
+    on the canvas or the top window of the scratch frame.
+    +R & -R increase or decrease the red component in the
+    main color box.  The scroll bars and RGB text boxes
+    can also be used.
+    NB The +R, -R buttons only work properly for system
+    24/32 True Color setting.
+
+#4   Transparency
+
+    This is set using the scroll-bar.  A stroke cross-
+    fades with the underlying color using the transparency
+    setting.  
+    NB after a stroke the transparency scroll bar has the
+    focus and so can be changed with the arrow keys.
+   
+#5   Scratch frame
+
+    Left-clicking on the top window of the scratch frame
+    parks the current paint color which can then be
+    retrieved by right-clicking on a color.
+
+    The bottom window can be used to test a brush color
+    and shape.  Hold the left button down to draw on
+    this window.
+    
+    A cross cursor shows up for moving the frame.
+
+#6   File operations
+
+    New: Restart with a clean sheet. Same as Del all
+    vectors
+
+    ----------------------------------------------------
+    Import vector file .vec:  reads and draws the selected
+    *.vec file overwriting any existing picture.
+
+    ----------------------------------------------------
+    Export vector file .vec:  saves all the stored vectors
+    from the array VEC() as ASCII.
+
+    ----------------------------------------------------
+    Get in binary file .veb:  reads and draws the selected
+    *.veb file overwriting any existing picture.
+
+    ----------------------------------------------------
+    Put out binary file .veb:  saves all the stored vectors
+    from the array VEC() as integer binary numbers.
+
+    ----------------------------------------------------
+    Import parked colors .prk:  reads and plots saved
+    colors on top window of the scratch frame.
+
+    ----------------------------------------------------
+    Export parked colors .prk:  saves all the parked colors
+    to a *.prk file.
+
+    ----------------------------------------------------
+    Save As bmp:  saves the picture to a *.bmp file.
+
+    ----------------------------------------------------
+    Quit:  exit program.
+    ----------------------------------------------------
+
+#7   Cross hairs & Magnifier
+
+    These are set on/off by the [C] & [M] buttons. It is
+    best not to use the magnifier when drawing except
+    where a tricky placement is required, such as in
+    filling a small area.  This is a help because the
+    magnifier has a black dot at the cursor hot-spot.
+    Alt-C and Alt-M can be used to toggle these.
+
+#8   Resizing canvas
+
+    The canvas can be resized using the button at the
+    bottom right of the picture.  This can only be done
+    when the display is cleared.  The Width & Height are
+    shown in the Info frame.
+    NB Use the picture scroll bars if the resize button
+    is off-screen.
+    NB see Fix and Stretch above.
+
+#9   Vector format
+
+    .vec  ASCII
+
+    NumVectors
+    Canvas width
+    Canvas height
+    -1, vector number     ' -1, # (stroke start)
+    brush size, brush angle
+    red, green		  ' paint color RG components
+    blue, alpha           ' B component, transparency x 100
+     X, Y
+     X, Y
+     ., .
+   -1, vector number      ' next stroke
+     etc
+     etc
+   -2, -2                 ' END
+
+    .veb  Binary
+
+    As ASCII but all 2 byte integers with no separators
+    or crlfs.
+
+#10  Parked colors' format
+
+   NumParkedColors
+   X, Y, long color
+   X, Y, long color
+   etc
+   etc
+
+trebor tnemyar 
